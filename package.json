@@ -1,0 +1,46 @@
+{
+    "name": "pdf-viewer",
+    "version": "1.0.0",
+    "description": "PDF Viewer",
+    "main": "main.js",
+    "scripts": {
+        "pack": "electron-builder --dir",
+        "dist": "electron-builder --publish never",
+        "start": "electron ."
+    },
+    "build": {
+        "win": {
+            "target": [
+                {
+                    "target": "nsis",
+                    "arch": [
+                        "x64",
+                        "ia32"
+                    ]
+                }
+            ]
+        }
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/thesourorange/neilstuff/pdf-viewer.git"
+    },
+    "keywords": [
+        "Electron",
+        "utility"
+    ],
+    "author": "GitHub",
+    "license": "CC0-1.0",
+    "dependencies": {
+        "mime": "^3.0.0"
+    },
+    "devDependencies": {
+        "electron": "^19.0.4",
+        "electron-builder": "^23.0.3",
+        "node": "^17.7.2"
+    },
+    "bugs": {
+        "url": "https://github.com/thesourorange/neilstuffpdf-viewer"
+    },
+    "homepage": "https://github.com/thesourorange/neilstuffpdf-viewer#readme"
+}
