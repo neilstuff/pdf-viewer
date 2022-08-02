@@ -46,7 +46,7 @@
 
         <div id="navigation_controls" class="center" style="margin-bottom: 5px;">
             <button id="go_previous" style="color:cadetblue">&#9665;</button>
-            <input id="current_page" value="1" type="number"/>
+            <input id="current_page" value="1" type="number" style="width:40px; text-align:right"/>
             <button id="go_next" style="color:cadetblue">&#9655;</button>
             <button id="zoom_in">&#128269;+</button>
             <button id="zoom_out">&#128269;-</button>
@@ -63,6 +63,7 @@
         var state = {
             pdf: null,
             currentPage: 1,
+            numPages: 0,
             zoom: 1
         }
 
@@ -90,9 +91,9 @@
 
             loadingTask.promise.then(function (pdf) {
                 state.pdf = pdf;
-                console.log(pdf);
+                state.numPages = pdf.numPages;
+                currentPage = 1;
                 render();
-
             }); 
 
         }
