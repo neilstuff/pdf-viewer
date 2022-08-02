@@ -1,52 +1,55 @@
 <!doctype html>
-  
+
 <html lang="en">
+
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>PDF Viewer</title>
-  <script type="text/javascript" src="node_modules/pdfjs-dist/build/pdf.min.js"></script>
-  <script type="text/javascript" id="pdf-js-worker"
-      src="node_modules/pdfjs-dist/build/pdf.worker.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PDF Viewer</title>
+    <script type="text/javascript" src="node_modules/pdfjs-dist/build/pdf.min.js"></script>
+    <script type="text/javascript" id="pdf-js-worker" src="node_modules/pdfjs-dist/build/pdf.worker.js"></script>
 
- <script>
-    pdfjsLib.GlobalWorkerOptions.workerSrc = document.getElementById("pdf-js-worker").getAttribute("src");
-</script>
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = document.getElementById("pdf-js-worker").getAttribute("src");
+    </script>
 
-  <style>
-      #canvas_container {
-         overflow: auto;
-      }
- 
-      #canvas_container {
-        background: rgba(0,0,0,0.2);
-        text-align: center;
-        border: solid 3px;
-      }
-
-      .center {
-        text-align: center;
-    }
-    
-    input, button, submit { border:1px solid white; background-color: white; }
-
-    button:hover {
+    <style>
+        #canvas_container {
+            overflow: auto;
+        }
         
-        border-bottom: dotted 1px rgba(0,0,0, 0.2);
-
-    }
-
-  </style>
+        #canvas_container {
+            background: rgba(0, 0, 0, 0.2);
+            text-align: center;
+            border: solid 3px;
+        }
+        
+        .center {
+            text-align: center;
+        }
+        
+        input,
+        button,
+        submit {
+            border: 1px solid white;
+            background-color: white;
+        }
+        
+        button:hover {
+            border-bottom: dotted 1px rgba(0, 0, 0, 0.2);
+        }
+    </style>
 </head>
+
 <body>
-     <div id="my_pdf_viewer" style="overflow: hidden;">
+    <div id="my_pdf_viewer" style="overflow: hidden;">
         <span style="position: absolute; top:5px; right:10px;">
             <button id="load_file" style="font-size: 18px;">&#128194;</button>
         </span>
 
         <div id="navigation_controls" class="center" style="margin-bottom: 5px;">
             <button id="go_previous" style="color:cadetblue">&#9665;</button>
-            <input id="current_page" value="1" type="number" style="width:40px; text-align:right"/>
+            <input id="current_page" value="1" type="number" style="width:40px; text-align:right" />
             <button id="go_next" style="color:cadetblue">&#9655;</button>
             <button id="zoom_in">&#128269;+</button>
             <button id="zoom_out">&#128269;-</button>
@@ -58,7 +61,7 @@
         </div>
 
     </div>
- 
+
     <script>
         var state = {
             pdf: null,
@@ -72,7 +75,7 @@
 
             loadButton.setAttribute("type", "file");
 
-            loadButton.addEventListener('change', function (e) {
+            loadButton.addEventListener('change', function(e) {
                 var files = e.target.files
 
                 callback(files);
@@ -82,50 +85,52 @@
             }, false);
 
             loadButton.click();
-        
+
         }
 
         function convert(content) {
 
-            var loadingTask = pdfjsLib.getDocument({ data: content });
+            var loadingTask = pdfjsLib.getDocument({
+                data: content
+            });
 
-            loadingTask.promise.then(function (pdf) {
+            loadingTask.promise.then(function(pdf) {
                 state.pdf = pdf;
                 state.numPages = pdf.numPages;
                 currentPage = 1;
                 render();
-            }); 
+            });
 
         }
-        
+
         function processFiles(files) {
- 
+
             if (files && typeof FileReader !== "undefined") {
-                for (var iFile = 0; iFile<files.length; iFile++) {
+                for (var iFile = 0; iFile < files.length; iFile++) {
                     readFile(files[iFile]);
                 }
-            } 
+            }
 
         }
 
         function readFile(file) {
 
-                if (file.size == 0) {
-                    alert("File: '" + file.name + "' is empty!");
-                } else if ( (/pdf/i).test(file.type) ) {  
-                    pdfFile = file;      
-                    
-                    var reader = new FileReader();
-        
-                    reader.onload = function(e) {
-                        pdfFile = file;
-            
-                        convert(reader.result);
-            
-                    };
-                    
-                    reader.readAsArrayBuffer(file);
-    
+            if (file.size == 0) {
+                alert("File: '" + file.name + "' is empty!");
+            } else if ((/pdf/i).test(file.type)) {
+                pdfFile = file;
+
+                var reader = new FileReader();
+
+                reader.onload = function(e) {
+                    pdfFile = file;
+
+                    convert(reader.result);
+
+                };
+
+                reader.readAsArrayBuffer(file);
+
             } else {
                 alert(file.type + " - is not supported");
             }
@@ -134,15 +139,17 @@
 
         function render() {
             state.pdf.getPage(state.currentPage).then((page) => {
-        
+
                 var canvas = document.getElementById("pdf_renderer");
                 var ctx = canvas.getContext('2d');
-                var viewport = page.getViewport({scale: state.zoom} );
+                var viewport = page.getViewport({
+                    scale: state.zoom
+                });
 
                 canvas.width = viewport.width;
                 canvas.height = viewport.height;
 
-               page.render({
+                page.render({
                     canvasContext: ctx,
                     viewport: viewport
                 });
@@ -150,17 +157,17 @@
         }
 
         document.getElementById('load_file').addEventListener('click', (e) => {
-            
+
             load((files) => {
 
                 processFiles(files);
-     
+
             })
 
         });
 
         document.getElementById('go_previous').addEventListener('click', (e) => {
-            if(state.pdf == null || state.currentPage == 1) 
+            if (state.pdf == null || state.currentPage == 1)
                 return;
             state.currentPage -= 1;
             document.getElementById("current_page").value = state.currentPage;
@@ -168,26 +175,26 @@
         });
 
         document.getElementById('go_next').addEventListener('click', (e) => {
-            if(state.pdf == null || state.currentPage > state.pdf._pdfInfo.numPages) 
+            if (state.pdf == null || state.currentPage > state.pdf._pdfInfo.numPages)
                 return;
-            
+
             state.currentPage += 1;
             document.getElementById("current_page").value = state.currentPage;
             render();
         });
 
         document.getElementById('current_page').addEventListener('keypress', (e) => {
-            if(state.pdf == null) return;
-            
+            if (state.pdf == null) return;
+
             // Get key code
             var code = (e.keyCode ? e.keyCode : e.which);
-            
+
             // If key code matches that of the Enter key
             if (code == 13) {
-                var desiredPage = 
-                document.getElementById('current_page').valueAsNumber;
-                                    
-                if(desiredPage >= 1 && desiredPage <= state.pdf._pdfInfo.numPages) {
+                var desiredPage =
+                    document.getElementById('current_page').valueAsNumber;
+
+                if (desiredPage >= 1 && desiredPage <= state.pdf._pdfInfo.numPages) {
                     state.currentPage = desiredPage;
                     document.getElementById("current_page").value = desiredPage;
                     render();
@@ -196,16 +203,17 @@
         });
 
         document.getElementById('zoom_in').addEventListener('click', (e) => {
-            if(state.pdf == null) return;
+            if (state.pdf == null) return;
             state.zoom += 0.5;
             render();
         });
 
         document.getElementById('zoom_out').addEventListener('click', (e) => {
-            if(state.pdf == null) return;
+            if (state.pdf == null) return;
             state.zoom -= 0.5;
             render();
         });
     </script>
 </body>
+
 </html>
