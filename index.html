@@ -97,7 +97,8 @@
             loadingTask.promise.then(function(pdf) {
                 state.pdf = pdf;
                 state.numPages = pdf.numPages;
-                currentPage = 1;
+                state.currentPage = 1;
+                document.getElementById("current_page").value = state.currentPage;
                 render();
             });
 
@@ -175,7 +176,7 @@
         });
 
         document.getElementById('go_next').addEventListener('click', (e) => {
-            if (state.pdf == null || state.currentPage > state.pdf._pdfInfo.numPages)
+            if (state.pdf == null || state.currentPage >= state.pdf._pdfInfo.numPages)
                 return;
 
             state.currentPage += 1;
